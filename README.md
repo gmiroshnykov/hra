@@ -14,14 +14,14 @@ Installation
 2. Clone the git repository
 
 Optional steps for devs:
-3. Install npm
-4. npm install nodeunit
+
+1. Install npm
+2. npm install nodeunit
 
 
 Usage
 -----
 
 1. Edit `config.js` and set appropriate host and port.
-2. Start HRA:
-    bin/hra-server
+2. Start HRA: `bin/hra-server`
 3. Send some HTTP requests to host and port from step 1.

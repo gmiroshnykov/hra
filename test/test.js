@@ -1,66 +1,58 @@
-var http = require('http');
+var helpers = require('./helpers');
+var dummyServers = require('./dummy-servers');
 
-var config = require('../config');
+var testCase = require('nodeunit').testCase;
+module.exports = testCase({
+    setUp: function() {
+        dummyServers.start();
+    },
 
-var client = http.createClient(config.http.port, config.http.host);
+    tearDown: function() {
+        dummyServers.stop();
+    },
 
-exports.testIndexReturns404 = function (test) {
-    test.expect(2);
+    testJsonSingleGet: function (test) {
+        var urlGet = dummyServers.getUrlGet();
+        var request = {
+            foo: {
+                url: urlGet + '?foo=1'
+            }
+        };
+        helpers.makeJsonRequest(request, function(response) {
+            test.equal(200, response.statusCode);
 
-    var request = client.request('GET', '/');
-    request.end();
-    request.on('response', function (response) {
-        test.equal(404, response.statusCode);
+            test.equal(200, response.body.foo.statusCode);
+            test.equal(JSON.stringify({foo: '1'}),
+                response.body.foo.body);
 
-        response.setEncoding('utf8');
-        var body = '';
-        response.on('data', function (chunk) {
-            body += chunk;
-        });
-        response.on('end', function() {
-            test.equal('Not Found\n', body);
             test.done();
         });
-    });
-};
+    },
 
-exports.testSimpleJsonGetRequests = function (test) {
-    var requestBody = {
-        downforeveryoneorjustme: {
-            method: 'GET',
-            url: 'http://downforeveryoneorjustme.com/',
-            headers: {Host: 'downforeveryoneorjustme.com'}
-        },
-        whatwg: {
-            method: 'GET',
-            url: 'http://www.whatwg.org/',
-            headers: {Host: 'www.whatwg.org'}
-        }
-    };
-    var requestBodyRaw = JSON.stringify(requestBody);
+    testJsonMultiGets: function (test) {
+        var urlGet = dummyServers.getUrlGet();
+        var request = {
+            foo: {
+                url: urlGet + '?foo=1'
+            },
+            bar: {
+                url: urlGet + '?bar=1'
+            }
+        };
+        helpers.makeJsonRequest(request, function(response) {
+            test.equal(200, response.statusCode);
 
-    var headers = {
-        'Content-Type': 'application/json',
-        'Content-Length': requestBodyRaw.length
-    };
-    var request = client.request('POST', '/json', headers);
-    request.write(requestBodyRaw);
-    request.end();
-    request.on('response', function (res) {
-        test.equal(200, res.statusCode);
-        test.equal('application/json', res.headers['content-type']);
+            test.equal(200, response.body.foo.statusCode);
+            test.equal(JSON.stringify({foo: '1'}),
+                response.body.foo.body);
 
-        res.setEncoding('utf8');
-        var responseBodyRaw = '';
-        res.on('data', function (chunk) {
-            responseBodyRaw += chunk;
-        });
+            test.equal(200, response.body.bar.statusCode);
+            test.equal(JSON.stringify({bar: '1'}),
+                response.body.foo.body);
 
-        res.on('end', function() {
-            var responseBody = JSON.parse(responseBodyRaw);
-            test.equal(200, responseBody.downforeveryoneorjustme.statusCode);
-            test.equal(200, responseBody.whatwg.statusCode);
             test.done();
         });
-    });
-};
+
+        test.done();
+    }
+});

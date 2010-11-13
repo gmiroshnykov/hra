@@ -36,6 +36,9 @@ exports.process = function (aggregatorRequests, callback) {
                 query, aggregatorRequest.headers);
 
         if (aggregatorRequest.body != undefined) {
+            if (typeof aggregatorRequest.body != 'string') {
+                aggregatorRequest.body = JSON.stringify(aggregatorRequest.body);
+            }
             request.write(aggregatorRequest.body);
         }
 

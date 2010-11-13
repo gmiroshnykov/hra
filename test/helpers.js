@@ -1,5 +1,6 @@
 var http = require('http');
 var url = require('url');
+var util = require('util');
 var request = require('request');
 
 var config = require('../config');
@@ -33,6 +34,9 @@ exports.makeJsonRequest = function(body, callback) {
         servers.get = createGet();
         servers.get.listen(config.test.server_get.port, config.test.server_get.host);
 
+        servers.post = createPost();
+        servers.post.listen(config.test.server_post.port, config.test.server_post.host);
+
         isRunning = true;
     };
 
@@ -42,6 +46,7 @@ exports.makeJsonRequest = function(body, callback) {
         }
 
         servers.get.close();
+        servers.post.close();
 
         isRunning = false;
     };
@@ -50,12 +55,12 @@ exports.makeJsonRequest = function(body, callback) {
         return isRunning;
     };
 
-    exports.getDummyUrlGet = function () {
-        return 'http://' + config.test.server_get.host + ':' + config.test.server_get.port + '/';
+    exports.getDummyUrl = function (method) {
+        method = method.toLowerCase();
+        return 'http://' + config.test['server_' + method].host + ':' + config.test['server_' + method].port + '/';
     };
 
-    function createGet()
-    {
+    function createGet() {
         return http.createServer(function (req, res) {
             var params = url.parse(req.url, true);
             if (params.query == undefined) {
@@ -64,6 +69,20 @@ exports.makeJsonRequest = function(body, callback) {
 
             res.writeHead(200, {'Content-Type': 'text/plain'});
             res.end(JSON.stringify(params.query));
+        });
+    }
+
+    function createPost() {
+        return http.createServer(function (req, res) {
+            var body = '';
+            req.on('data', function (chunk) {
+                body += chunk;
+            });
+
+            req.on('end', function() {
+                res.writeHead(200, {'Content-Type': 'text/plain'});
+                res.end(body);
+            });
         });
     }
 })();

@@ -17,6 +17,7 @@ Optional steps for devs:
 
 1. Install npm
 2. npm install nodeunit
+3. npm install request
 
 
 Usage

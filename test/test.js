@@ -1,18 +1,17 @@
 var helpers = require('./helpers');
-var dummyServers = require('./dummy-servers');
 
 var testCase = require('nodeunit').testCase;
 module.exports = testCase({
     setUp: function() {
-        dummyServers.start();
+        helpers.startDummyServers();
     },
 
     tearDown: function() {
-        dummyServers.stop();
+        helpers.stopDummyServers();
     },
 
     testJsonSingleGet: function (test) {
-        var urlGet = dummyServers.getUrlGet();
+        var urlGet = helpers.getDummyUrlGet();
         var request = {
             foo: {
                 url: urlGet + '?foo=bar'
@@ -30,7 +29,7 @@ module.exports = testCase({
     },
 
     testJsonMultiGets: function (test) {
-        var urlGet = dummyServers.getUrlGet();
+        var urlGet = helpers.getDummyUrlGet();
         var request = {
             foo: {
                 url: urlGet + '?foo=bar'

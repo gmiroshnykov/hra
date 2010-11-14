@@ -18,7 +18,9 @@ exports.makeJsonRequest = function(body, callback) {
         body: requestBodyRaw
     };
     request(httpRequest, function(err, response, body) {
-        body = JSON.parse(body);
+        if (!err) {
+            body = JSON.parse(body);
+        }
         callback(err, response, body);
     });
 };

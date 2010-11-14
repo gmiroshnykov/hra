@@ -1,13 +1,16 @@
+var util = require('util');
 var helpers = require('./helpers');
 
 var testCase = require('nodeunit').testCase;
 module.exports = testCase({
-    setUp: function() {
+    setUp: function(callback) {
         helpers.startDummyServers();
+        if (callback) callback();
     },
 
-    tearDown: function() {
+    tearDown: function(callback) {
         helpers.stopDummyServers();
+        if (callback) callback();
     },
 
     testJsonSingleGet: function (test) {
@@ -18,6 +21,8 @@ module.exports = testCase({
             }
         };
         helpers.makeJsonRequest(request, function(err, response, body) {
+            test.ifError(err);
+
             test.equal(200, response.statusCode);
 
             test.equal(200, body.foo.statusCode);
@@ -38,6 +43,8 @@ module.exports = testCase({
             }
         };
         helpers.makeJsonRequest(request, function(err, response, body) {
+            test.ifError(err);
+
             test.equal(200, response.statusCode);
 
             test.equal(200, body.foo.statusCode);
@@ -59,6 +66,8 @@ module.exports = testCase({
             }
         };
         helpers.makeJsonRequest(request, function(err, response, body) {
+            test.ifError(err);
+
             test.equal(200, response.statusCode);
 
             test.equal(200, body.foo.statusCode);
@@ -88,6 +97,8 @@ module.exports = testCase({
             }
         };
         helpers.makeJsonRequest(request, function(err, response, body) {
+            test.ifError(err);
+
             test.equal(200, response.statusCode);
 
             test.equal(200, body.foo.statusCode);
@@ -117,6 +128,8 @@ module.exports = testCase({
         };
 
         helpers.makeJsonRequest(request, function(err, response, body) {
+            test.ifError(err);
+
             test.equal(200, response.statusCode);
 
             test.equal(200, body.foo.statusCode);

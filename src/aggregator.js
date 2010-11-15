@@ -24,7 +24,11 @@ exports.process = function (aggregatorRequests, callback) {
             aggregatorRequest.headers['Host'] = urlParts.hostname;
         }
 
-        var query = urlParts.pathname;
+        var query = '/';
+        if (urlParts.pathname != undefined) {
+            query = urlParts.pathname;
+        }
+
         if (urlParts.search != undefined) {
             query += urlParts.search;
         }

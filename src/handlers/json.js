@@ -14,11 +14,14 @@ exports.handler = function (req, res) {
     });
 
     req.on('end', function() {
+        var aggregatorResult;
         try {
-            var aggregatorRequest = JSON.parse(requestBodyRaw);
+            aggregatorRequest = JSON.parse(requestBodyRaw);
         } catch (e) {
             require('./error').showError(400, req, res);
+            return;
         }
+
         var total = 0;
         for (k in aggregatorRequest) {
             total++;

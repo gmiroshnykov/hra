@@ -155,33 +155,51 @@ module.exports = testCase({
         });
     },
 
+    testJsonGetWithoutPath: function (test) {
+        test.expect(2);
+
+        var urlGet = helpers.getDummyUrl('get');
+        var request = {
+            foo: {
+                url: urlGet.substr(0, urlGet.length - 1)
+            }
+        };
+        helpers.makeJsonRequest(request, function(err, response, body) {
+            test.ifError(err);
+            test.equal(200, response.statusCode);
+            test.done();
+        });
+    },
+
     testJsonGetReturns400: function (test) {
-        test.expect(1);
+        test.expect(2);
 
         var request = {
             uri: helpers.baseUrl + '/json'
         };
         simple_request(request, function(err, response, body) {
+            test.ifError(err);
             test.equal(400, response.statusCode);
             test.done();
         });
     },
 
     testJsonEmptyPostReturns400: function (test) {
-        test.expect(1);
+        test.expect(2);
 
         var request = {
             method: 'POST',
             uri: helpers.baseUrl + '/json'
         };
         simple_request(request, function(err, response, body) {
+            test.ifError(err);
             test.equal(400, response.statusCode);
             test.done();
         });
     },
 
     testJsonInvalidBodyReturns400: function (test) {
-        test.expect(1);
+        test.expect(2);
 
         var request = {
             method: 'POST',
@@ -189,6 +207,7 @@ module.exports = testCase({
             body: 'foo=bar'
         };
         simple_request(request, function(err, response, body) {
+            test.ifError(err);
             test.equal(400, response.statusCode);
             test.done();
         });

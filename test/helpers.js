@@ -4,6 +4,8 @@ var util = require('util');
 var request = require('request');
 
 var config = require('../config');
+config.test = require('./config');
+
 var baseUrl = 'http://' + config.http.host + ':' + config.http.port;
 exports.baseUrl = baseUrl;
 

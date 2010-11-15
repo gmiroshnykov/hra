@@ -3,13 +3,22 @@ var util = require('util');
 var aggregator = require('../aggregator');
 
 exports.handler = function (req, res) {
+    if (req.method != 'POST') {
+        require('./error').showError(400, req, res);
+        return;
+    }
+
     var requestBodyRaw = '';
     req.on('data', function (chunk) {
         requestBodyRaw += chunk;
     });
 
     req.on('end', function() {
-        var aggregatorRequest = JSON.parse(requestBodyRaw);
+        try {
+            var aggregatorRequest = JSON.parse(requestBodyRaw);
+        } catch (e) {
+            require('./error').showError(400, req, res);
+        }
         var total = 0;
         for (k in aggregatorRequest) {
             total++;

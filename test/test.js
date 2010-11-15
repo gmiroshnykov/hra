@@ -1,4 +1,5 @@
 var util = require('util');
+var simple_request = require('request');
 var helpers = require('./helpers');
 
 var testCase = require('nodeunit').testCase;
@@ -14,6 +15,8 @@ module.exports = testCase({
     },
 
     testJsonSingleGet: function (test) {
+        test.expect(4);
+
         var urlGet = helpers.getDummyUrl('get');
         var request = {
             foo: {
@@ -34,6 +37,8 @@ module.exports = testCase({
     },
 
     testJsonSinglePost: function (test) {
+        test.expect(4);
+
         var urlPost = helpers.getDummyUrl('post');
         var request = {
             foo: {
@@ -56,6 +61,8 @@ module.exports = testCase({
     },
 
     testJsonMultiGets: function (test) {
+        test.expect(6);
+
         var urlGet = helpers.getDummyUrl('get');
         var request = {
             foo: {
@@ -83,6 +90,8 @@ module.exports = testCase({
     },
 
     testJsonMultiPosts: function (test) {
+        test.expect(6);
+
         var urlPost = helpers.getDummyUrl('post');
         var request = {
             foo: {
@@ -114,6 +123,8 @@ module.exports = testCase({
     },
 
     testJsonMixGetAndPost: function (test) {
+        test.expect(6);
+
         var urlGet = helpers.getDummyUrl('get');
         var urlPost = helpers.getDummyUrl('post');
         var request = {
@@ -140,6 +151,45 @@ module.exports = testCase({
             test.equal(JSON.stringify({bar: 'foo'}),
                 body.bar.body);
 
+            test.done();
+        });
+    },
+
+    testJsonGetReturns400: function (test) {
+        test.expect(1);
+
+        var request = {
+            uri: helpers.baseUrl + '/json'
+        };
+        simple_request(request, function(err, response, body) {
+            test.equal(400, response.statusCode);
+            test.done();
+        });
+    },
+
+    testJsonEmptyPostReturns400: function (test) {
+        test.expect(1);
+
+        var request = {
+            method: 'POST',
+            uri: helpers.baseUrl + '/json'
+        };
+        simple_request(request, function(err, response, body) {
+            test.equal(400, response.statusCode);
+            test.done();
+        });
+    },
+
+    testJsonInvalidBodyReturns400: function (test) {
+        test.expect(1);
+
+        var request = {
+            method: 'POST',
+            uri: helpers.baseUrl + '/json',
+            body: 'foo=bar'
+        };
+        simple_request(request, function(err, response, body) {
+            test.equal(400, response.statusCode);
             test.done();
         });
     }

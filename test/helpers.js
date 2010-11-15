@@ -5,6 +5,7 @@ var request = require('request');
 
 var config = require('../config');
 var baseUrl = 'http://' + config.http.host + ':' + config.http.port;
+exports.baseUrl = baseUrl;
 
 exports.makeJsonRequest = function(body, callback) {
     var requestBodyRaw = JSON.stringify(body);

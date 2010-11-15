@@ -13,42 +13,42 @@ Usage
 
 1. Create `config.local.js` and redefine any settings you wish from `config.js` like so:
 
-    config = module.parent.exports;
-    config.http.port = 8000;
+        config = module.parent.exports;
+        config.http.port = 8000;
 
 2. Configure your frontend server to proxy requests to HRA. Here's example for nginx:
 
-    location /hra/ {
-        proxy_pass http://127.0.0.1:8000/;
-    }
+        location /hra/ {
+            proxy_pass http://127.0.0.1:8000/;
+        }
 
 3. Start HRA: `bin/hra-server`
 4. Force your fontend server to reload config, e.g. `/etc/init.d/nginx reload`
 5. Start sending POST requests from your application to URL `/hra/json` with JSON body like this:
 
-    {
-        google: {
-            url: 'http://www.google.com/'
-        },
-        facebook: {
-            url: 'http://www.facebook.com/'
+        {
+            google: {
+                url: 'http://www.google.com/'
+            },
+            facebook: {
+                url: 'http://www.facebook.com/'
+            }
         }
-    }
 
 6. Receive responses like this:
 
-    {
-        google: {
-            statusCode: 301,
-            headers: {...},
-            body: '<HTML>...</HTML>\r\n'    // yup, Google doesn't give a damn about markup validity
-        },
-        facebook: {
-            statusCode: 302,
-            headers: {...},
-            body: ''                        // and Facebook doesn't even bother to explain anything
+        {
+            google: {
+                statusCode: 301,
+                headers: {...},
+                body: '<HTML>...</HTML>\r\n'    // yup, Google doesn't give a damn about markup validity
+            },
+            facebook: {
+                statusCode: 302,
+                headers: {...},
+                body: ''                        // and Facebook doesn't even bother to explain anything
+            }
         }
-    }
 
 
 Installation

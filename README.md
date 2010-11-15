@@ -11,20 +11,7 @@ has to perform in order to get all the data it needs.
 Usage
 -----
 
-1. Create `config.local.js` and redefine any settings you wish from `config.js` like so:
-
-        config = module.parent.exports;
-        config.http.port = 8000;
-
-2. Configure your frontend server to proxy requests to HRA. Here's example for nginx:
-
-        location /hra/ {
-            proxy_pass http://127.0.0.1:8000/;
-        }
-
-3. Start HRA: `bin/hra-server`
-4. Force your fontend server to reload config, e.g. `/etc/init.d/nginx reload`
-5. Start sending POST requests from your application to URL `/hra/json` with JSON body like this:
+1. Send POST request to URL `/hra/json` with JSON body like this:
 
         {
             google: {
@@ -35,7 +22,7 @@ Usage
             }
         }
 
-6. Receive responses like this:
+2. Receive response like this:
 
         {
             google: {
@@ -56,11 +43,24 @@ Installation
 
 1. Install latest node.js
 2. Clone the git repository
+3. Create `config.local.js` and redefine any settings you wish from `config.js` like so:
+
+        config = module.parent.exports;
+        config.http.port = 8000;
+
+4. Configure your frontend server to proxy requests to HRA. Here's example for nginx:
+
+        location /hra/ {
+            proxy_pass http://127.0.0.1:8000/;
+        }
+
+5. Start HRA: `bin/hra-server`
+6. Force your fontend server to reload config, e.g. `/etc/init.d/nginx reload`
 
 Optional steps for devs:
 
 1. Install npm
-2. npm install nodeunit
-3. npm install request
-
-
+2. `npm install nodeunit`
+3. `npm install request`
+4. Create `test/config.local.js` and redefine any settings you wish from `test/config.js`.
+5. Run tests: `nodeunit test/test.js` 

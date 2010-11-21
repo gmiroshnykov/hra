@@ -3,6 +3,9 @@ var simple_request = require('request');
 var helpers = require('./helpers');
 
 var testCase = require('nodeunit').testCase;
+
+var dummyUrl = helpers.getDummyUrl();
+
 module.exports = testCase({
     setUp: function(callback) {
         helpers.startDummyServers();
@@ -17,10 +20,9 @@ module.exports = testCase({
     testJsonSingleGet: function (test) {
         test.expect(4);
 
-        var urlGet = helpers.getDummyUrl('get');
         var request = {
             foo: {
-                url: urlGet + '?foo=bar'
+                url: dummyUrl + '/echo-get?foo=bar'
             }
         };
         helpers.makeJsonRequest(request, function(err, response, body) {
@@ -39,10 +41,9 @@ module.exports = testCase({
     testJsonSinglePost: function (test) {
         test.expect(4);
 
-        var urlPost = helpers.getDummyUrl('post');
         var request = {
             foo: {
-                url: urlPost,
+                url: dummyUrl + '/echo-post',
                 method: 'POST',
                 body: {foo: 'bar'}
             }
@@ -63,13 +64,12 @@ module.exports = testCase({
     testJsonMultiGets: function (test) {
         test.expect(6);
 
-        var urlGet = helpers.getDummyUrl('get');
         var request = {
             foo: {
-                url: urlGet + '?foo=bar'
+                url: dummyUrl + '/echo-get?foo=bar'
             },
             bar: {
-                url: urlGet + '?bar=foo'
+                url: dummyUrl + '/echo-get?bar=foo'
             }
         };
         helpers.makeJsonRequest(request, function(err, response, body) {
@@ -92,15 +92,14 @@ module.exports = testCase({
     testJsonMultiPosts: function (test) {
         test.expect(6);
 
-        var urlPost = helpers.getDummyUrl('post');
         var request = {
             foo: {
-                url: urlPost,
+                url: dummyUrl + '/echo-post',
                 method: 'POST',
                 body: {foo: 'bar'}
             },
             bar: {
-                url: urlPost,
+                url: dummyUrl + '/echo-post',
                 method: 'POST',
                 body: {bar: 'foo'}
             }
@@ -125,14 +124,12 @@ module.exports = testCase({
     testJsonMixGetAndPost: function (test) {
         test.expect(6);
 
-        var urlGet = helpers.getDummyUrl('get');
-        var urlPost = helpers.getDummyUrl('post');
         var request = {
             foo: {
-                url: urlGet + '?foo=bar'
+                url: dummyUrl + '/echo-get?foo=bar'
             },
             bar: {
-                url: urlPost,
+                url: dummyUrl + '/echo-post',
                 method: 'POST',
                 body: {bar: 'foo'}
             }
@@ -158,10 +155,9 @@ module.exports = testCase({
     testJsonGetWithoutPath: function (test) {
         test.expect(2);
 
-        var urlGet = helpers.getDummyUrl('get');
         var request = {
             foo: {
-                url: urlGet.substr(0, urlGet.length - 1)
+                url: dummyUrl
             }
         };
         helpers.makeJsonRequest(request, function(err, response, body) {

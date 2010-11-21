@@ -30,28 +30,24 @@ exports.makeJsonRequest = function(body, callback) {
 
 (function() {
     var isRunning = false;
-    var servers = {};
+    var dummyServer = null;
     exports.startDummyServers = function () {
         if (isRunning) {
-            throw 'Dummy servers already running';
+            throw 'Dummy server is running';
         }
 
-        servers.get = createGet();
-        servers.get.listen(config.test.server_get.port, config.test.server_get.host);
-
-        servers.post = createPost();
-        servers.post.listen(config.test.server_post.port, config.test.server_post.host);
+        dummyServer = createDummyServer();
+        dummyServer.listen(config.test.server.port, config.test.server.host);
 
         isRunning = true;
     };
 
     exports.stopDummyServers = function () {
         if (!isRunning) {
-            throw 'Dummy servers are not running';
+            throw 'Dummy server is not running';
         }
 
-        servers.get.close();
-        servers.post.close();
+        dummyServer.close();
 
         isRunning = false;
     };
@@ -60,34 +56,49 @@ exports.makeJsonRequest = function(body, callback) {
         return isRunning;
     };
 
-    exports.getDummyUrl = function (method) {
-        method = method.toLowerCase();
-        return 'http://' + config.test['server_' + method].host + ':' + config.test['server_' + method].port + '/';
+    exports.getDummyUrl = function () {
+        return 'http://' + config.test.server.host + ':' + config.test.server.port;
     };
 
-    function createGet() {
+    function createDummyServer() {
         return http.createServer(function (req, res) {
             var params = url.parse(req.url, true);
-            if (params.query == undefined) {
-                params.query = {};
+
+            switch (params.pathname) {
+                case '/':
+                    res.writeHead(200, {'Content-Type': 'text/plain'});
+                    res.end('Main Page');
+                    return;
+
+                case '/echo-get':
+                    if (params.query == undefined) {
+                        params.query = {};
+                    }
+                    res.writeHead(200, {'Content-Type': 'text/plain'});
+                    res.end(JSON.stringify(params.query));
+                    return;
+
+                case '/echo-post':
+                    req.body = '';
+                    req.on('data', function (chunk) {
+                        req.body += chunk;
+                    });
+
+                    req.on('end', function() {
+                        res.writeHead(200, {'Content-Type': 'text/plain'});
+                        res.end(req.body);
+                    });
+                    return;
+
+                case '/redirect':
+                    var location = '/echo-get?redirected=true';
+                    res.writeHead(301, {'Location': location});
+                    res.end('Reditecting...');
+                    return;
+
+                default:
+                    console.log('UNKOWN PATHNAME: ' + params.pathname);
             }
-
-            res.writeHead(200, {'Content-Type': 'text/plain'});
-            res.end(JSON.stringify(params.query));
-        });
-    }
-
-    function createPost() {
-        return http.createServer(function (req, res) {
-            var body = '';
-            req.on('data', function (chunk) {
-                body += chunk;
-            });
-
-            req.on('end', function() {
-                res.writeHead(200, {'Content-Type': 'text/plain'});
-                res.end(body);
-            });
         });
     }
 })();

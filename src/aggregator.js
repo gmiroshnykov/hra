@@ -1,6 +1,7 @@
-var http = require('http');
 var url = require('url');
 var util = require('util');
+
+var httpClient = require('./http-client');
 
 exports.process = function (aggregatorRequests, callback) {
     //console.log('Aggregator Requests: ' + util.inspect(aggregatorRequests));
@@ -35,7 +36,7 @@ exports.process = function (aggregatorRequests, callback) {
 
         //console.log('URL parts: ' + util.inspect(urlParts));
 
-        var client = http.createClient(urlParts.port, urlParts.hostname);
+        var client = httpClient.createClient(urlParts.port, urlParts.hostname);
         var request = client.request(aggregatorRequest.method,
                 query, aggregatorRequest.headers);
 
@@ -49,22 +50,19 @@ exports.process = function (aggregatorRequests, callback) {
         request.end();
         request.aggregatorId = id;
 
-        request.on('response', function (res) {
+        request.on('response', function (response) {
             var aggregatorId = this.aggregatorId;
             var aggregatorResponse = {};
-            aggregatorResponse.statusCode = res.statusCode;
-            aggregatorResponse.headers = res.headers;
+            aggregatorResponse.statusCode = response.statusCode;
+            aggregatorResponse.headers = response.headers;
 
-            res.setEncoding('utf8');
-            var responseBodyRaw = '';
-            res.on('data', function (chunk) {
-                responseBodyRaw += chunk;
-            });
+            response.setEncoding('utf8');
 
-            res.on('end', function() {
-                aggregatorResponse.body = responseBodyRaw;
+            response.on('end', function() {
+                aggregatorResponse.body = response.data;
                 callback(aggregatorId, aggregatorResponse);
             });
         });
     }
 };
+

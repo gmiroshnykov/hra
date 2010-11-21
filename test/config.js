@@ -1,12 +1,8 @@
 config = exports;
 
-config.server_get = {};
-config.server_get.host = '127.0.0.1';
-config.server_get.port = 8700;
-
-config.server_post = {};
-config.server_post.host = '127.0.0.1';
-config.server_post.port = 8701;
+config.server = {};
+config.server.host = '127.0.0.1';
+config.server.port = 8700;
 
 try {
     require('./config.local');

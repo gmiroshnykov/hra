@@ -3,5 +3,7 @@
 , "description" : "HTTP Request Aggregator"
 , "version" : "0.0.1"
 , "dependencies" : ["nodeunit", "request"]
-, "main" : "./bin/hra-server"
+, "directories" : {"lib" : "./lib"}
+, "bin" : "./bin/hra-server"
+, "engines" : { "node" : "=0.3.1" }
 }

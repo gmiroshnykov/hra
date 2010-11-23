@@ -1,0 +1,7 @@
+{ "name" : "hra-server"
+, "author" : "George Miroshnykov <laggy.luke@gmail.com>"
+, "description" : "HTTP Request Aggregator"
+, "version" : "0.0.1"
+, "dependencies" : ["nodeunit", "request"]
+, "main" : "./bin/hra-server"
+}

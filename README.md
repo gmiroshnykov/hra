@@ -1,6 +1,14 @@
 HRA - HTTP Requests Aggregator
 ==============================
 
+This is a legacy prototype project!
+-----------------------------------
+
+This project is not supported or updated anymore.
+If you're looking for a way to execute multiple queries in parallel,
+you should consider using [HTTP Pipelining](http://en.wikipedia.org/wiki/HTTP_pipelining)
+or (preferably) [SPDY](http://en.wikipedia.org/wiki/SPDY) instead.
+
 About
 -----
 
